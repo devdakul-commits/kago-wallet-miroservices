@@ -1,0 +1,10 @@
+import express from 'express';
+import { registerProfileRoutes } from './src/routes/profileRoutes.js';
+import { registerVendorRoutes } from './src/routes/vendorRoutes.js';
+const app = express();
+app.use(express.json());
+registerProfileRoutes(app);
+registerVendorRoutes(app);
+app.use((req, res) => res.status(404).json({ error: 'Route not found', service: 'auth-service' }));
+const port = process.env.PORT || 3001;
+app.listen(port, () => console.log(`[auth-service] listening on port ${port}`));

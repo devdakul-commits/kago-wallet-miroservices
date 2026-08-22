@@ -1,0 +1,21 @@
+{
+  "name": "kago-inventory-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "node --loader ts-node/esm server.ts"
+  },
+  "dependencies": {
+    "express": "^4.19.0",
+    "redis": "^6.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.11.0"
+  }
+}

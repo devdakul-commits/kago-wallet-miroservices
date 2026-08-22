@@ -1,0 +1,174 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: kago_wallet
+    ports:
+      - '5433:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - '6379:6379'
+
+  token-service:
+    build:
+      context: ./token-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./token-service/.env
+    depends_on:
+      - redis
+    ports:
+      - '4001:4001'
+
+  verification-service:
+    build:
+      context: ./verification-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./verification-service/.env
+    depends_on:
+      - redis
+    ports:
+      - '4002:4002'
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+    env_file:
+      - ./auth-service/.env
+    depends_on:
+      - token-service
+      - verification-service
+      - wallet-service
+    ports:
+      - '3001:3001'
+
+  chat-service:
+    build:
+      context: .
+      dockerfile: ./chat-service/Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - '3010:3010'
+
+  support-service:
+    build:
+      context: .
+      dockerfile: ./support-service/Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - '3020:3020'
+
+  order-service:
+    build:
+      context: .
+      dockerfile: ./order-service/Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - '3002:3002'
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./notification-service/Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - '3003:3003'
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: ./inventory-service/Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - '3006:3006'
+
+  menu-service:
+    build:
+      context: .
+      dockerfile: ./menu-service/Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - '3007:3003'
+
+  reward-service:
+    build:
+      context: .
+      dockerfile: ./reward-service/Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - '3015:3015'
+
+  kago-ride-service:
+    build:
+      context: .
+      dockerfile: ./kago-ride-service/Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - '3016:3016'
+
+  kago-laundry-service-user:
+    build:
+      context: .
+      dockerfile: ./kago-laundry-service/user/Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - '3012:3012'
+
+  kago-settings-service:
+    build:
+      context: .
+      dockerfile: ./kago-settings-service/Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - '3017:3017'
+
+  wallet-service:
+    build:
+      context: ./wallet-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./wallet-service/.env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '3005:3005'
+
+  backend:
+    build:
+      context: ../kago-wallet-backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend.env
+    depends_on:
+      - auth-service
+      - token-service
+      - verification-service
+      - order-service
+      - notification-service
+      - wallet-service
+      - chat-service
+      - support-service
+    ports:
+      - '8081:8082'
+
+volumes:
+  pgdata:

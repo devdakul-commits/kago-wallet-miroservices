@@ -1,0 +1,17 @@
+{
+  "name": "kago-wallet-microservices",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@types/pg": "^8.20.4",
+    "pg": "^8.22.0",
+    "redis": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
